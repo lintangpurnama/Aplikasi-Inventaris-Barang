@@ -11,12 +11,75 @@ class Auth extends CI_Controller
 
     public function index()
     {
-        $data = [
-            'title' => 'Login'
-        ];
-        $page = 'index';
-        $this->_template($page, $data);
+        $this->_validation('login');
+
+        if ($this->form_validation->run() == false) {
+            $data = [
+                'title' => 'Login'
+            ];
+            $page = 'index';
+            $this->_template($page, $data);
+        } else {
+            $datainput = [
+                'user' => $this->input->post('user'),
+                'password' => $this->input->post('password')
+            ];
+            $this->_login($datainput);
+        }
     }
+
+    public function _login($data)
+    {
+        $user  = $data['user'];
+        $password  = $data['password'];
+        $cekemail  = $this->Auth->getDataBy(['a.email' => $user]);
+        $cekuser = null;
+        $datauser = null;
+
+        //login menggunakan email dan npp  
+        //jika email salah atau tidak ada
+        if ($cekemail->num_rows() == 0) {
+            $cekNPP = $this->Auth->getDataBy(['a.npp' => $user]); //ambil data npp
+            if ($cekNPP->num_rows() == 0) {
+                $this->session->flashdata('error', 'User tidak di temukan');
+                redirect('auth');
+            } else {
+                //jika ada npp nya
+                $cekuser = 1;
+                $datauser = $cekNPP->row();
+            }
+        } else {
+            $cekuser = 1;
+            $datauser = $cekemail->row();
+        }
+        if ($cekuser == 1) {
+            if (password_verify($password, $datauser->password)) {
+                # cek user aktif
+                $cekAktif = $this->Auth->getDataBy(['a.is_active' => '1', 'a.email' => $datauser->email]);
+                //jika user sama dengan 1 atau aktiv dan email sama dengan email yg di input
+                if ($cekAktif->num_rows() == 1) {
+                    # user berhasil login
+                    $this->session->set_userdata('user', $datauser);
+                    if ($datauser->user_role_id == 'invt1') {
+                        # jika role admin
+                        redirect('dashboard');
+                    } else {
+                        echo 'member';
+                    }
+                } else {
+                    $this->session->set_flashdata('error', 'User Sudah Tidak Aktif');
+                    redirect('auth');
+                }
+            } else {
+                $this->session->set_flashdata('error', 'Password Salah');
+                redirect('auth');
+            }
+        }
+    }
+
+
+
+
 
     public function forget()
     {
@@ -97,9 +160,6 @@ class Auth extends CI_Controller
                     $this->session->set_flashdata('success', 'Silahkan cek email kamu untuk merubah password');
                     redirect('auth');
                 } else {
-
-
-
                     echo $this->email->print_debugger();
                 }
             } else {
@@ -141,6 +201,16 @@ class Auth extends CI_Controller
                     'matches' => '%s tidak cocok'
                 ]
             );
+        }
+
+        if ($type == 'login') {
+            $this->form_validation->set_rules('user', 'Email atau NPP', 'trim|required', [
+                'required' => '%s wajib diisi'
+            ]);
+            $this->form_validation->set_rules('password', 'Password', 'trim|required|min_length[8]', [
+                'required' => '%s wajib diisi',
+                'min_length' => '%s wajib 8 karakter'
+            ]);
         }
         if ($type == 'forget') {
             $this->form_validation->set_rules(

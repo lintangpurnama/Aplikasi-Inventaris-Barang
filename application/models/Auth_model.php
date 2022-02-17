@@ -24,12 +24,11 @@ class Auth_model extends CI_Model
         return $this->db->affected_rows();
     }
     public function getDataTokenBy($data)
-    {
+    { 
         $this->db->order_by('created_at', 'DESC'); //menampilkan data terbaru
         $this->db->limit(1); //menampilkan data hanya 1 
         return $this->db->get_where($this->tableToken, $data);
     }
-
     public function update($data, $where)
     {
         $this->db->update($this->table, $data, $where); //update table user

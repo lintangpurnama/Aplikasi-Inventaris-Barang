@@ -32,19 +32,20 @@
                                 </button>
                             </div>
                         <?php endif ?>
-
-
-
-
-
-
-                        <form action="<?= base_url('assets/') ?>index.html">
+                        <!-- <?= base_url('assets/') ?>index.html -->
+                        <form action="" method="POST">
                             <div class="form-group">
-                                <input type="text" class="form-control" placeholder="Email" required="">
+                                <input type="text" class="form-control <?= form_error('user') ? 'is-invalid' : '' ?>" placeholder="Email atau NPP anda" name="user" value="<?= set_value('user') ?>">
+                                <div class="invalid-feedback">
+                                    <?= form_error('user') ?>
+                                </div>
                                 <i class="ik ik-user"></i>
                             </div>
                             <div class="form-group">
-                                <input type="password" class="form-control" placeholder="Password" required="">
+                                <input type="password" class="form-control <?= form_error('password') ? 'is-invalid' : '' ?>" placeholder="Password" name="password" value="<?= set_value('password') ?>">
+                                <div class="invalid-feedback">
+                                    <?= form_error('password') ?>
+                                </div>
                                 <i class="ik ik-lock"></i>
                             </div>
                             <div class="row">
@@ -54,7 +55,7 @@
                                 </div>
                             </div>
                             <div class="sign-btn text-center">
-                                <button class="btn btn-theme">Sign In</button>
+                                <button class="btn btn-theme" type="submit">Sign In</button>
                             </div>
                         </form>
 

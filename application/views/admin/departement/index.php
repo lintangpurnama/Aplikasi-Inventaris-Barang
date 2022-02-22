@@ -36,7 +36,6 @@
                         <a href="<?= base_url('departement/add') ?>" class="btn btn-outline-primary btn-rounded">Tambah Data</a>
                     </div>
                     <div class="card-body">
-
                         <table id="data_table" class="table">
                             <thead>
                                 <tr>
@@ -55,7 +54,8 @@
 
                                         <td>
                                             <a href="#!"><i class="ik ik-edit f-16 mr-15 text-green"></i></a>
-                                            <a href="#!"><i class="ik ik-trash-2 f-16 text-red"></i></a>
+
+                                            <a href="#!"><i class="ik ik-trash-2 f-16 mr-15 text-red delete-department" data-id="<?= $departement->id ?>"></i></a>
                                         </td>
 
                                     </tr>

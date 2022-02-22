@@ -12,6 +12,7 @@ $route['forgotpassword/(:any)/(:any)'] = 'Auth/forgotpassword/$1/$2';
 //data departement
 $route['departement'] = 'Admin_departement';
 $route['departement/add'] = 'Admin_departement/create';
+$route['departement/delete/(:any)'] = 'Admin_departement/delete/$1';
 
 
 
